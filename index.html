@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ශිෂ්‍ය ලකුණු සංස්කරණය කිරීම</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif+Sinhala:wght@400;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --bg: #070b1a;
+      --panel: #0b1124;
+      --card-bg: #080d22;
+      --card-border: #38bdf8;
+      --input-bg: #05091a;
+      --input-border: #2563eb;
+      --max-box-bg: rgba(30, 58, 138, 0.34);
+      --max-box-border: rgba(96, 165, 250, 0.25);
+      --tab-bg: #1e3a8a;
+      --tab-border: #3b82f6;
+      --tab-active: #0ea5e9;
+      --badge-bg: #1d4ed8;
+      --badge-border: #60a5fa;
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --cta: #38bdf8;
+      --cta-hover: #0284c7;
+      --danger: #fca5a5;
+      --success: #6ee7b7;
+      --font-sinhala: "Noto Serif Sinhala", system-ui, -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: clamp(8px, 2.5vw, 16px);
+      background:
+        radial-gradient(circle at 85% 6%, rgba(59, 130, 246, 0.22), transparent 42%),
+        radial-gradient(circle at 12% 18%, rgba(37, 99, 235, 0.16), transparent 45%),
+        var(--bg);
+      color: var(--text);
+      font-family: var(--font-sinhala);
+      font-size: clamp(14px, 3.8vw, 16px);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font-family: var(--font-sinhala);
+    }
+
+    .app-card {
+      max-width: 520px;
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid rgba(96, 165, 250, 0.2);
+      border-radius: 16px;
+      padding: clamp(14px, 4vw, 20px);
+      box-shadow: 0 16px 38px rgba(0, 0, 0, 0.55);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .page-header {
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(96, 165, 250, 0.16);
+    }
+
+    h1 {
+      margin: 0 0 4px;
+      font-size: clamp(1.18rem, 4.8vw, 1.45rem);
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.2px;
+    }
+
+    .exam-summary-line {
+      margin: 0;
+      font-size: clamp(0.84rem, 3.4vw, 0.95rem);
+      font-weight: 600;
+      color: #e2e8f0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Login Form */
+    .login-box {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field-group label {
+      font-size: clamp(0.84rem, 3.3vw, 0.92rem);
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    input.text-input {
+      width: 100%;
+      height: 42px;
+      padding: 6px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-size: clamp(0.88rem, 3.5vw, 0.98rem);
+    }
+
+    input.text-input:focus {
+      outline: 2px solid rgba(56, 189, 248, 0.55);
+      border-color: var(--cta);
+    }
+
+    .checkbox-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      cursor: pointer;
+      user-select: none;
+      font-size: clamp(0.74rem, 2.9vw, 0.82rem);
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .checkbox-row span {
+      font-weight: 400;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      accent-color: var(--cta);
+      cursor: pointer;
+    }
+
+    /* Grade Selector Tabs */
+    .grade-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 14px;
+      scrollbar-width: none;
+    }
+
+    .grade-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .grade-btn {
+      flex: 0 0 auto;
+      padding: 9px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--tab-border);
+      background: var(--tab-bg);
+      color: #ffffff;
+      font-size: clamp(0.8rem, 3.2vw, 0.9rem);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .grade-btn.active {
+      background: var(--tab-active);
+      border-color: #7dd3fc;
+      color: #ffffff;
+    }
+
+    /* Max Marks Section */
+    .max-marks-box {
+      background: var(--max-box-bg);
+      border: 1px solid var(--max-box-border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+    }
+
+    .max-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .max-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .max-row.hidden {
+      display: none;
+    }
+
+    .max-row label {
+      font-size: clamp(0.82rem, 3.3vw, 0.92rem);
+      font-weight: 600;
+      color: #e2e8f0;
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    input.max-box {
+      width: 82px;
+      height: 38px;
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: rgba(15, 23, 42, 0.72);
+      color: #ffffff;
+      font-size: clamp(0.88rem, 3.5vw, 0.98rem);
+      font-weight: 700;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    input.max-box:focus {
+      outline: 2px solid rgba(56, 189, 248, 0.55);
+      border-color: var(--cta);
+    }
+
+    /* Student Cards */
+    .students-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+      margin-bottom: 12px;
+    }
+
+    .student-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    .student-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      min-width: 0;
+    }
+
+    .student-index {
+      flex-shrink: 0;
+      background: var(--badge-bg);
+      border: 1px solid var(--badge-border);
+      color: #ffffff;
+      font-size: clamp(0.74rem, 2.9vw, 0.82rem);
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      line-height: 1.25;
+    }
+
+    .student-name {
+      flex: 1;
+      min-width: 0;
+      font-size: clamp(0.92rem, 3.8vw, 1.04rem);
+      font-weight: 800;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .student-address {
+      margin: 0 0 12px;
+      font-size: clamp(0.72rem, 2.8vw, 0.8rem);
+      font-weight: 400;
+      color: #cbd5e1;
+      line-height: 1.45;
+    }
+
+    .student-inputs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .sub-field {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .sub-field.hidden {
+      display: none;
+    }
+
+    .sub-field label {
+      font-size: clamp(0.82rem, 3.2vw, 0.9rem);
+      color: #e2e8f0;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    input.score-box {
+      width: 68px;
+      height: 38px;
+      padding: 4px 6px;
+      border-radius: 8px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: #ffffff;
+      font-size: clamp(0.9rem, 3.5vw, 0.98rem);
+      font-weight: 700;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    input.score-box:focus {
+      outline: 2px solid rgba(56, 189, 248, 0.55);
+      border-color: var(--cta);
+    }
+
+    .ab-note {
+      margin: 0 0 14px;
+      padding: 8px 11px;
+      border-radius: 10px;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      color: #bae6fd;
+      font-size: clamp(0.72rem, 2.8vw, 0.8rem);
+      font-weight: 400;
+      line-height: 1.45;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 12px 14px;
+      border: none;
+      border-radius: 11px;
+      background: var(--cta);
+      color: #070b1a;
+      font-size: clamp(0.92rem, 3.8vw, 1.02rem);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .submit-btn:hover {
+      background: var(--cta-hover);
+      color: #ffffff;
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .post-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .secondary-btn {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 11px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-size: clamp(0.86rem, 3.5vw, 0.95rem);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .secondary-btn:hover {
+      border-color: var(--cta);
+    }
+
+    .logout-btn {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 11px;
+      border: 1px solid rgba(252, 165, 165, 0.35);
+      background: rgba(127, 29, 29, 0.25);
+      color: var(--danger);
+      font-size: clamp(0.86rem, 3.5vw, 0.95rem);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover {
+      background: rgba(153, 27, 27, 0.4);
+    }
+
+    /* Post-Submission View */
+    .submitted-box {
+      background: var(--max-box-bg);
+      border: 1px solid rgba(110, 231, 183, 0.32);
+      border-radius: 12px;
+      padding: 16px 14px;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .submitted-title {
+      margin: 0 0 6px;
+      font-size: clamp(0.96rem, 3.8vw, 1.1rem);
+      font-weight: 800;
+      color: var(--success);
+    }
+
+    .submitted-sub {
+      margin: 0;
+      font-size: clamp(0.8rem, 3.1vw, 0.88rem);
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .status-msg {
+      margin-top: 12px;
+      font-size: clamp(0.8rem, 3.1vw, 0.88rem);
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .status-msg.ok {
+      color: var(--success);
+    }
+
+    .status-msg.err {
+      color: var(--danger);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-card">
+    <header class="page-header">
+      <h1>ශිෂ්‍ය ලකුණු සංස්කරණය කිරීම</h1>
+      <p id="examSummaryLine" class="exam-summary-line">විභාග විස්තර පූරණය වෙමින් පවතී...</p>
+    </header>
+
+    <!-- 1. Login Section -->
+    <section id="loginSection" class="login-box">
+      <div class="field-group">
+        <label for="loginEmail">Email ලිපිනය</label>
+        <input id="loginEmail" class="text-input" type="email" placeholder="teacher@example.com" />
+      </div>
+
+      <div class="field-group">
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" class="text-input" type="password" placeholder="මුරපදය ඇතුළත් කරන්න" />
+        <label class="checkbox-row" for="showPasswordCheckbox">
+          <input id="showPasswordCheckbox" type="checkbox" />
+          <span>මුරපදය පෙන්වන්න</span>
+        </label>
+      </div>
+
+      <button id="loginBtn" class="submit-btn" type="button">Login</button>
+      <div id="loginStatus" class="status-msg"></div>
+    </section>
+
+    <!-- 2. Marks Entry Section -->
+    <section id="marksSection" class="hidden">
+      <div id="gradeTabs" class="grade-tabs" role="tablist"></div>
+
+      <div class="max-marks-box">
+        <div id="maxWrittenRow" class="max-row">
+          <label for="maxWrittenInput">ලිඛිත පරීක්ෂණය සඳහා මුළු ලකුණු:</label>
+          <input id="maxWrittenInput" class="max-box" type="number" min="0" step="1" inputmode="numeric" />
+        </div>
+
+        <div id="maxOralRow" class="max-row">
+          <label for="maxOralInput">වාචික පරීක්ෂණය සඳහා මුළු ලකුණු:</label>
+          <input id="maxOralInput" class="max-box" type="number" min="0" step="1" inputmode="numeric" />
+        </div>
+      </div>
+
+      <div id="studentsList" class="students-list"></div>
+
+      <p class="ab-note">සිසුවෙකුගේ ලකුණු 'AB' ලෙස සටහන් වී ඇත්නම්, එම කොටුව හිස්ව තබන්න.</p>
+
+      <button id="submitBtn" class="submit-btn" type="button">Submit</button>
+
+      <div id="marksStatus" class="status-msg"></div>
+    </section>
+
+    <!-- 3. Post-Submission Confirmation Section -->
+    <section id="submittedSection" class="hidden">
+      <div class="submitted-box">
+        <p id="submittedMessage" class="submitted-title">ලකුණු සාර්ථකව යාවත්කාලීන කරන ලදී.</p>
+        <p class="submitted-sub">ඔබ ඇතුළත් කළ ලකුණු සුරකින ලදී.</p>
+      </div>
+      <div class="post-actions">
+        <button id="editAgainBtn" class="secondary-btn" type="button">නැවත සංස්කරණය කරන්න</button>
+        <button id="logoutBtn" class="logout-btn" type="button">Logout</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const API_URL = "YOUR_APPS_SCRIPT_WEB_APP_URL";
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const internalTeacherId = String(urlParams.get("teacher_id") || urlParams.get("teacherID") || "").trim();
+    const urlYear = String(urlParams.get("year") || "").trim();
+    const urlTerm = String(urlParams.get("term") || "").trim();
+
+    const examSummaryLine = document.getElementById("examSummaryLine");
+
+    const loginSection = document.getElementById("loginSection");
+    const loginEmail = document.getElementById("loginEmail");
+    const loginPassword = document.getElementById("loginPassword");
+    const showPasswordCheckbox = document.getElementById("showPasswordCheckbox");
+    const loginBtn = document.getElementById("loginBtn");
+    const loginStatus = document.getElementById("loginStatus");
+
+    const marksSection = document.getElementById("marksSection");
+    const gradeTabsEl = document.getElementById("gradeTabs");
+    const studentsListEl = document.getElementById("studentsList");
+    const maxWrittenRow = document.getElementById("maxWrittenRow");
+    const maxOralRow = document.getElementById("maxOralRow");
+    const maxWrittenInput = document.getElementById("maxWrittenInput");
+    const maxOralInput = document.getElementById("maxOralInput");
+    const submitBtn = document.getElementById("submitBtn");
+    const marksStatus = document.getElementById("marksStatus");
+
+    const submittedSection = document.getElementById("submittedSection");
+    const submittedMessage = document.getElementById("submittedMessage");
+    const editAgainBtn = document.getElementById("editAgainBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    let activeSession = null;
+    let activeTeacherData = null;
+    let gradesConfig = {};
+    let grades = [];
+    let selectedGrade = "";
+    let marksState = {};
+
+    showPasswordCheckbox.addEventListener("change", () => {
+      loginPassword.type = showPasswordCheckbox.checked ? "text" : "password";
+    });
+
+    editAgainBtn.addEventListener("click", () => {
+      submittedSection.classList.add("hidden");
+      marksSection.classList.remove("hidden");
+      clearMsg(marksStatus);
+      renderCurrentGradeView();
+    });
+
+    logoutBtn.addEventListener("click", () => {
+      activeSession = null;
+      activeTeacherData = null;
+      gradesConfig = {};
+      grades = [];
+      selectedGrade = "";
+      marksState = {};
+
+      loginEmail.value = "";
+      loginPassword.value = "";
+      showPasswordCheckbox.checked = false;
+      loginPassword.type = "password";
+      clearMsg(loginStatus);
+      clearMsg(marksStatus);
+
+      submittedSection.classList.add("hidden");
+      marksSection.classList.add("hidden");
+      loginSection.classList.remove("hidden");
+    });
+
+    function setMsg(el, type, text) {
+      el.className = `status-msg ${type}`;
+      el.textContent = text;
+    }
+
+    function clearMsg(el) {
+      el.className = "status-msg";
+      el.textContent = "";
+    }
+
+    function formatTermLabel(termVal) {
+      const t = String(termVal || "").trim();
+      if (!t) return "";
+      if (t === "1") return "පළමු වාරය";
+      if (t === "2") return "දෙවන වාරය";
+      if (t === "3") return "තෙවන වාරය";
+      if (t.includes("වාරය")) return t;
+      return `${t} වන වාරය`;
+    }
+
+    function applyHeaderInfo(data) {
+      const y = String((data && (data.year || data.url_year)) || "").trim();
+      const tFormatted = formatTermLabel((data && (data.term || data.url_term)) || "");
+      const sub = String((data && data.subject) || "").trim();
+
+      const periodParts = [];
+      if (y) periodParts.push(y);
+      if (tFormatted) periodParts.push(tFormatted);
+      const periodText = periodParts.join(" ");
+
+      const parts = [];
+      if (periodText) parts.push(periodText);
+      if (sub) parts.push(sub);
+
+      examSummaryLine.textContent =
+        parts.length > 0 ? parts.join(" | ") : "විභාග විස්තර";
+    }
+
+    async function apiGetInit() {
+      applyHeaderInfo({
+        url_year: urlYear,
+        url_term: urlTerm,
+        subject: ""
+      });
+
+      if (!API_URL || API_URL === "YOUR_APPS_SCRIPT_WEB_APP_URL") {
+        setMsg(loginStatus, "err", "සේවාදායක සම්බන්ධතා ලිපිනය සකසා නොමැත.");
+        return;
+      }
+
+      if (!internalTeacherId) {
+        setMsg(loginStatus, "err", "පිවිසුම් සබැඳියේ අවශ්‍ය තොරතුරු සම්පූර්ණ නොමැත.");
+        return;
+      }
+
+      const qs = new URLSearchParams({
+        action: "init",
+        teacher_id: internalTeacherId,
+        year: urlYear,
+        term: urlTerm
+      });
+
+      try {
+        const resp = await fetch(`${API_URL}?${qs.toString()}`, {
+          method: "GET",
+          redirect: "follow"
+        });
+        const data = await resp.json();
+        applyHeaderInfo(data);
+        if (!data || !data.ok) {
+          setMsg(loginStatus, "err", (data && data.error) || "දත්ත ලබා ගැනීමට නොහැකි විය.");
+        }
+      } catch (err) {
+        setMsg(loginStatus, "err", "සම්බන්ධතා දෝෂයක් ඇති විය.");
+      }
+    }
+
+    async function apiPostJson(bodyObj) {
+      const resp = await fetch(API_URL, {
+        method: "POST",
+        redirect: "follow",
+        body: JSON.stringify(bodyObj)
+      });
+      return await resp.json();
+    }
+
+    apiGetInit();
+
+    loginBtn.addEventListener("click", async () => {
+      clearMsg(loginStatus);
+      const em = loginEmail.value.trim();
+      const pw = loginPassword.value;
+
+      if (!API_URL || API_URL === "YOUR_APPS_SCRIPT_WEB_APP_URL") {
+        setMsg(loginStatus, "err", "සේවාදායක සම්බන්ධතා ලිපිනය සකසා නොමැත.");
+        return;
+      }
+      if (!internalTeacherId) {
+        setMsg(loginStatus, "err", "පිවිසුම් සබැඳියේ අවශ්‍ය තොරතුරු සම්පූර්ණ නොමැත.");
+        return;
+      }
+      if (!em || !pw) {
+        setMsg(loginStatus, "err", "කරුණාකර Email ලිපිනය සහ Password ඇතුළත් කරන්න.");
+        return;
+      }
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = "පරීක්ෂා කරමින් පවතී...";
+
+      try {
+        const res = await apiPostJson({
+          action: "login",
+          teacher_id: internalTeacherId,
+          year: urlYear,
+          term: urlTerm,
+          email: em,
+          password: pw
+        });
+
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Login";
+
+        if (!res || !res.ok) {
+          setMsg(loginStatus, "err", (res && res.message) || "පිවිසුම අසාර්ථක විය.");
+          return;
+        }
+
+        activeTeacherData = res.teacherData;
+        activeSession = {
+          teacher_id: activeTeacherData.teacher_id || internalTeacherId,
+          year: (activeTeacherData && activeTeacherData.year) || urlYear,
+          term: (activeTeacherData && activeTeacherData.term) || urlTerm,
+          email: em,
+          password: pw
+        };
+        initMarksUi(activeTeacherData);
+      } catch (err) {
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Login";
+        setMsg(loginStatus, "err", "සම්බන්ධතා දෝෂයක් ඇති විය.");
+      }
+    });
+
+    function isNoOral(val) {
+      return String(val ?? "").trim().toUpperCase() === "NO";
+    }
+
+    function formatLoadedMark(val) {
+      if (val === null || val === undefined) return "";
+      const str = String(val).trim();
+      if (str === "" || str.toUpperCase() === "AB") return "";
+      return str;
+    }
+
+    function initMarksUi(data) {
+      applyHeaderInfo(data);
+      const rawMarksObj = data.marks_data || {};
+      gradesConfig = rawMarksObj.grades || rawMarksObj || {};
+      grades = Object.keys(gradesConfig);
+
+      if (grades.length === 0) {
+        setMsg(loginStatus, "err", "මෙම වාර්තාව සඳහා ශ්‍රේණි හෝ ශිෂ්‍ය දත්ත සකසා නොමැත.");
+        return;
+      }
+
+      let hasExistingValues = false;
+      selectedGrade = grades[0];
+      marksState = {};
+
+      for (const grade of grades) {
+        const gradeCfg = gradesConfig[grade] || {};
+        const noOral = isNoOral(gradeCfg.mo);
+
+        marksState[grade] = {
+          subject_id: String(gradeCfg.subject_id ?? "").trim(),
+          mw: String(gradeCfg.mw ?? 100),
+          mo: noOral ? "NO" : String(gradeCfg.mo ?? 10),
+          students: {}
+        };
+
+        for (const st of gradeCfg.students || []) {
+          const wLoaded = formatLoadedMark(st.w);
+          const oLoaded = noOral ? "NO" : formatLoadedMark(st.o);
+          if (wLoaded !== "" || (!noOral && oLoaded !== "")) {
+            hasExistingValues = true;
+          }
+          marksState[grade].students[st.id] = {
+            index_number: String(st.index_number ?? "").trim(),
+            name: String(st.name ?? "").trim(),
+            address: String(st.address ?? "").trim(),
+            w: wLoaded,
+            o: oLoaded
+          };
+        }
+      }
+
+      loginSection.classList.add("hidden");
+      submittedSection.classList.add("hidden");
+      marksSection.classList.remove("hidden");
+
+      renderGradeTabs();
+      renderCurrentGradeView();
+
+      if (hasExistingValues) {
+        setMsg(
+          marksStatus,
+          "ok",
+          "කලින් සුරැකූ ලකුණු පූරණය කර ඇත. අවශ්‍ය වෙනස්කම් සිදු කර Submit කරන්න."
+        );
+      }
+    }
+
+    function syncCurrentGradeToState() {
+      if (!selectedGrade || !marksState[selectedGrade]) return;
+      const gState = marksState[selectedGrade];
+      const noOral = isNoOral(gState.mo);
+      gState.mw = maxWrittenInput.value;
+      if (!noOral) {
+        gState.mo = maxOralInput.value;
+      }
+
+      const cards = studentsListEl.querySelectorAll(".student-card");
+      cards.forEach((card) => {
+        const sid = card.dataset.studentId;
+        if (!gState.students[sid]) return;
+        gState.students[sid].w = card.querySelector(".written-input").value;
+        gState.students[sid].o = noOral ? "NO" : card.querySelector(".oral-input").value;
+      });
+    }
+
+    function renderGradeTabs() {
+      gradeTabsEl.innerHTML = "";
+      for (const grade of grades) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "grade-btn" + (grade === selectedGrade ? " active" : "");
+        btn.textContent = grade;
+        btn.addEventListener("click", () => {
+          if (grade === selectedGrade) return;
+          syncCurrentGradeToState();
+          selectedGrade = grade;
+          clearMsg(marksStatus);
+          renderGradeTabs();
+          renderCurrentGradeView();
+        });
+        gradeTabsEl.appendChild(btn);
+      }
+    }
+
+    function renderCurrentGradeView() {
+      const gState = marksState[selectedGrade];
+      const noOral = isNoOral(gState.mo);
+
+      maxWrittenRow.classList.remove("hidden");
+      maxWrittenInput.value = gState.mw;
+
+      if (noOral) {
+        maxOralRow.classList.add("hidden");
+      } else {
+        maxOralRow.classList.remove("hidden");
+        maxOralInput.value = gState.mo;
+      }
+
+      const students = (gradesConfig[selectedGrade] && gradesConfig[selectedGrade].students) || [];
+      studentsListEl.innerHTML = "";
+
+      for (const st of students) {
+        const saved = gState.students[st.id] || {
+          index_number: String(st.index_number ?? "").trim(),
+          name: String(st.name ?? "").trim(),
+          address: String(st.address ?? "").trim(),
+          w: "",
+          o: noOral ? "NO" : ""
+        };
+
+        const card = document.createElement("div");
+        card.className = "student-card";
+        card.dataset.studentId = st.id;
+        card.dataset.studentName = saved.name;
+
+        const addressHtml = saved.address
+          ? `<p class="student-address">${saved.address}</p>`
+          : "";
+
+        card.innerHTML = `
+          <div class="student-header">
+            <span class="student-index">${saved.index_number || "-"}</span>
+            <div class="student-name">${saved.name}</div>
+          </div>
+          ${addressHtml}
+          <div class="student-inputs">
+            <div class="sub-field">
+              <label for="w_${st.id}">ලිඛිත:</label>
+              <input
+                id="w_${st.id}"
+                class="score-box written-input"
+                type="text"
+                inputmode="decimal"
+                placeholder="AB"
+                value="${saved.w}"
+              />
+            </div>
+            <div class="sub-field ${noOral ? "hidden" : ""}">
+              <label for="o_${st.id}">වාචික:</label>
+              <input
+                id="o_${st.id}"
+                class="score-box oral-input"
+                type="text"
+                inputmode="decimal"
+                placeholder="AB"
+                value="${noOral ? "" : saved.o}"
+              />
+            </div>
+          </div>
+        `;
+
+        card.querySelectorAll("input.score-box").forEach((inp) => {
+          inp.addEventListener("focus", () => inp.select());
+          inp.addEventListener("input", syncCurrentGradeToState);
+        });
+
+        studentsListEl.appendChild(card);
+      }
+    }
+
+    maxWrittenInput.addEventListener("input", syncCurrentGradeToState);
+    maxOralInput.addEventListener("input", syncCurrentGradeToState);
+
+    function parseMaxMark(rawValue, gradeName, labelName) {
+      const trimmed = String(rawValue || "").trim();
+      if (trimmed === "") {
+        throw new Error(`${gradeName}: කරුණාකර "${labelName}" ඇතුළත් කරන්න.`);
+      }
+      const num = Number(trimmed);
+      if (Number.isNaN(num) || num <= 0) {
+        throw new Error(`${gradeName}: "${labelName}" සඳහා 0 ට වැඩි වලංගු අගයක් ඇතුළත් කරන්න.`);
+      }
+      return num;
+    }
+
+    function parseStudentMark(rawValue, maxAllowed, gradeName, studentName, partLabel) {
+      const trimmed = String(rawValue || "").trim();
+      if (trimmed === "" || trimmed.toUpperCase() === "AB") {
+        return "AB";
+      }
+      const num = Number(trimmed);
+      if (Number.isNaN(num) || num < 0 || num > maxAllowed) {
+        throw new Error(
+          `${gradeName} — ${studentName} (${partLabel}: ${trimmed}) වලංගු නොවේ (0 සිට ${maxAllowed} දක්වා යොදන්න හෝ හිස්ව තබන්න).`
+        );
+      }
+      return num;
+    }
+
+    submitBtn.addEventListener("click", async () => {
+      clearMsg(marksStatus);
+      syncCurrentGradeToState();
+
+      try {
+        const updatedGrades = {};
+
+        for (const grade of grades) {
+          const gState = marksState[grade];
+          const noOral = isNoOral(gState.mo);
+
+          const maxWritten = parseMaxMark(
+            gState.mw,
+            grade,
+            "ලිඛිත පරීක්ෂණය සඳහා මුළු ලකුණු"
+          );
+          const maxOral = noOral
+            ? "NO"
+            : parseMaxMark(gState.mo, grade, "වාචික පරීක්ෂණය සඳහා මුළු ලකුණු");
+
+          const students = (gradesConfig[grade] && gradesConfig[grade].students) || [];
+          const updatedStudents = [];
+
+          for (const st of students) {
+            const entry = gState.students[st.id] || {
+              index_number: String(st.index_number ?? "").trim(),
+              name: String(st.name ?? "").trim(),
+              address: String(st.address ?? "").trim(),
+              w: "",
+              o: noOral ? "NO" : ""
+            };
+            const wVal = parseStudentMark(entry.w, maxWritten, grade, entry.name, "ලිඛිත");
+            const oVal = noOral
+              ? "NO"
+              : parseStudentMark(entry.o, maxOral, grade, entry.name, "වාචික");
+
+            const studentObj = {
+              id: st.id,
+              index_number: entry.index_number,
+              name: entry.name
+            };
+            if (entry.address) {
+              studentObj.address = entry.address;
+            }
+            studentObj.w = wVal;
+            studentObj.o = oVal;
+
+            updatedStudents.push(studentObj);
+          }
+
+          const gradePayload = {
+            mw: maxWritten,
+            mo: maxOral,
+            students: updatedStudents
+          };
+
+          if (gState.subject_id) {
+            gradePayload.subject_id = gState.subject_id;
+          }
+
+          updatedGrades[grade] = gradePayload;
+        }
+
+        const singleJsonPayload = {
+          v: 3,
+          year: activeTeacherData.year,
+          term: activeTeacherData.term,
+          sub: activeTeacherData.subject,
+          grades: updatedGrades
+        };
+
+        const marksJsonStr = JSON.stringify(singleJsonPayload);
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "සුරකිමින් පවතී...";
+
+        const res = await apiPostJson({
+          action: "submit",
+          teacher_id: activeSession.teacher_id,
+          year: activeSession.year,
+          term: activeSession.term,
+          email: activeSession.email,
+          password: activeSession.password,
+          marks_json: marksJsonStr
+        });
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit";
+
+        if (!res || !res.ok) {
+          setMsg(marksStatus, "err", (res && res.message) || "සුරැකීම අසාර්ථක විය.");
+          return;
+        }
+
+        submittedMessage.textContent =
+          (res && res.message) || "ලකුණු සාර්ථකව යාවත්කාලීන කරන ලදී.";
+        marksSection.classList.add("hidden");
+        submittedSection.classList.remove("hidden");
+      } catch (err) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit";
+        setMsg(marksStatus, "err", err.message || "දෝෂයක් ඇති විය.");
+      }
+    });
+  </script>
+</body>
+</html>
